@@ -2,53 +2,67 @@
 <html>
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Day 3 - I'm a Dev Now</title>
+  <title>Day 5 - I'm a Dev Now</title>
   <style>
     body {
-      background: #0f172a;
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
       color: #fbbf24;
       font-family: Arial, sans-serif;
       text-align: center;
-      padding: 40px 20px;
+      padding: 20px 15px;
+      min-height: 100vh;
     }
     h1 { 
       color: #fbbf24; 
-      font-size: 28px;
-      margin-bottom: 10px;
+      font-size: 26px;
+      margin-bottom: 5px;
+    }
+    .quote {
+      font-style: italic;
+      color: #94a3b8;
+      margin: 15px 0;
+      font-size: 14px;
     }
     .card {
       background: #1e293b;
       padding: 20px;
-      border-radius: 12px;
-      margin-top: 20px;
+      border-radius: 16px;
+      margin-top: 15px;
       max-width: 500px;
       margin-left: auto;
       margin-right: auto;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
     }
     input, button {
       background: #334155;
       color: white;
       border: none;
-      padding: 12px;
-      border-radius: 8px;
+      padding: 14px;
+      border-radius: 10px;
       font-size: 16px;
       margin-top: 10px;
+      width: 100%;
+      box-sizing: border-box;
     }
     button {
       background: #22c55e;
       cursor: pointer;
+      font-weight: bold;
+    }
+    button:active {
+      transform: scale(0.98);
     }
     button.reset {
       background: #ef4444;
-      margin-left: 10px;
+      margin-top: 15px;
     }
     hr {
       border-color: #334155;
       margin: 20px 0;
       border-style: solid;
     }
-    #dayCount, #totalHours {
-      font-size: 36px;
+    #dayCount, #totalHours, #streak {
+      font-size: 32px;
       color: #22c55e;
     }
     ul {
@@ -58,22 +72,63 @@
     }
     li {
       background: #334155;
-      margin: 5px 0;
-      padding: 8px;
-      border-radius: 6px;
+      margin: 6px 0;
+      padding: 10px;
+      border-radius: 8px;
+    }
+    .progress-bar {
+      background: #334155;
+      height: 24px;
+      border-radius: 12px;
+      overflow: hidden;
+      margin: 15px 0;
+    }
+    .progress-fill {
+      background: linear-gradient(90deg, #22c55e, #16a34a);
+      height: 100%;
+      width: 0%;
+      transition: width 0.5s ease;
+    }
+    .stats {
+      display: flex;
+      justify-content: space-around;
+      margin: 20px 0;
+    }
+    .stat {
+      text-align: center;
+    }
+    .stat-label {
+      font-size: 12px;
+      color: #94a3b8;
     }
   </style>
 </head>
 <body>
-  <h1>Day 3: Track My Hours</h1>
+  <h1>Day 5: Level Up</h1>
+  <p class="quote" id="quote">Loading motivation...</p>
+  
   <div class="card">
-    <p><strong>Name:</strong> Done Johnny</p>
-    <p><strong>Goal:</strong> Get remote job by coding by Dec 2027</p>
+    <p><strong>Done Johnny</strong> | Goal: Remote job by Dec 2027</p>
     
-    <hr>
+    <div class="stats">
+      <div class="stat">
+        <div id="dayCount">5</div>
+        <div class="stat-label">Day</div>
+      </div>
+      <div class="stat">
+        <div id="streak">0</div>
+        <div class="stat-label">Streak</div>
+      </div>
+      <div class="stat">
+        <div id="totalHours">0</div>
+        <div class="stat-label">Hours</div>
+      </div>
+    </div>
     
-    <h2>Day <span id="dayCount">3</span></h2>
-    <p><strong>Total Hours:</strong> <span id="totalHours">0</span>h</p>
+    <div class="progress-bar">
+      <div class="progress-fill" id="progressFill"></div>
+    </div>
+    <p><span id="progressText">0%</span> to 100 hours</p>
     
     <input type="number" id="hoursInput" placeholder="Hours coded today" min="0" step="0.5">
     <button onclick="logHours()">Log Hours</button>
@@ -87,13 +142,33 @@
   </div>
 
   <script>
-    let day = parseInt(localStorage.getItem('codingDay')) || 3;
+    const quotes = [
+      "Consistency beats intensity every time.",
+      "You're 1% better than yesterday.",
+      "Future you is watching. Don't disappoint them.",
+      "Code a little. Every. Single. Day.",
+      "Discipline is choosing what you want most over what you want now.",
+      "Small steps daily lead to massive results."
+    ];
+    
+    let day = parseInt(localStorage.getItem('codingDay')) || 5;
     let hoursLog = JSON.parse(localStorage.getItem('hoursLog')) || [];
+    
+    function showQuote() {
+      let randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
+      document.getElementById('quote').textContent = '"' + randomQuote + '"';
+    }
     
     function updateUI() {
       document.getElementById('dayCount').textContent = day;
+      document.getElementById('streak').textContent = hoursLog.length;
+      
       let total = hoursLog.reduce((sum, entry) => sum + entry.hours, 0);
       document.getElementById('totalHours').textContent = total;
+      
+      let percent = Math.min((total / 100) * 100, 100);
+      document.getElementById('progressFill').style.width = percent + '%';
+      document.getElementById('progressText').textContent = Math.round(percent) + '%';
       
       let list = document.getElementById('historyList');
       list.innerHTML = '';
@@ -116,19 +191,22 @@
       day++;
       localStorage.setItem('codingDay', day);
       updateUI();
+      showQuote();
       alert(`Logged ${hours}h ✅ Day ${day-1} complete!`);
     }
     
     function resetAll() {
       if(confirm('Reset everything?')) {
         localStorage.clear();
-        day = 3;
+        day = 5;
         hoursLog = [];
         updateUI();
+        showQuote();
       }
     }
     
     updateUI();
+    showQuote();
   </script>
 </body>
-</html> 
+</html>
