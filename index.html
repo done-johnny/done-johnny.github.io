@@ -2,29 +2,61 @@
 <html>
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Day 5 - I'm a Dev Now</title>
+  <title>Day 6 - I'm a Dev Now</title>
   <style>
+    :root {
+      --bg: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      --card: #1e293b;
+      --text: #fbbf24;
+      --muted: #94a3b8;
+      --input: #334155;
+      --green: #22c55e;
+      --red: #ef4444;
+    }
+    
+    [data-theme="light"] {
+      --bg: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+      --card: #ffffff;
+      --text: #1e293b;
+      --muted: #64748b;
+      --input: #e2e8f0;
+      --green: #16a34a;
+      --red: #dc2626;
+    }
+    
     body {
-      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-      color: #fbbf24;
+      background: var(--bg);
+      color: var(--text);
       font-family: Arial, sans-serif;
       text-align: center;
       padding: 20px 15px;
       min-height: 100vh;
+      transition: all 0.3s ease;
     }
     h1 { 
-      color: #fbbf24; 
+      color: var(--text); 
       font-size: 26px;
       margin-bottom: 5px;
     }
     .quote {
       font-style: italic;
-      color: #94a3b8;
+      color: var(--muted);
       margin: 15px 0;
       font-size: 14px;
     }
+    .theme-toggle {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: var(--input);
+      border: none;
+      padding: 10px 15px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 20px;
+    }
     .card {
-      background: #1e293b;
+      background: var(--card);
       padding: 20px;
       border-radius: 16px;
       margin-top: 15px;
@@ -32,10 +64,11 @@
       margin-left: auto;
       margin-right: auto;
       box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+      transition: all 0.3s ease;
     }
     input, button {
-      background: #334155;
-      color: white;
+      background: var(--input);
+      color: var(--text);
       border: none;
       padding: 14px;
       border-radius: 10px;
@@ -45,25 +78,26 @@
       box-sizing: border-box;
     }
     button {
-      background: #22c55e;
+      background: var(--green);
       cursor: pointer;
       font-weight: bold;
+      color: white;
     }
     button:active {
       transform: scale(0.98);
     }
     button.reset {
-      background: #ef4444;
+      background: var(--red);
       margin-top: 15px;
     }
     hr {
-      border-color: #334155;
+      border-color: var(--input);
       margin: 20px 0;
       border-style: solid;
     }
     #dayCount, #totalHours, #streak {
       font-size: 32px;
-      color: #22c55e;
+      color: var(--green);
     }
     ul {
       text-align: left;
@@ -71,20 +105,20 @@
       padding: 0;
     }
     li {
-      background: #334155;
+      background: var(--input);
       margin: 6px 0;
       padding: 10px;
       border-radius: 8px;
     }
     .progress-bar {
-      background: #334155;
+      background: var(--input);
       height: 24px;
       border-radius: 12px;
       overflow: hidden;
       margin: 15px 0;
     }
     .progress-fill {
-      background: linear-gradient(90deg, #22c55e, #16a34a);
+      background: linear-gradient(90deg, var(--green), #16a34a);
       height: 100%;
       width: 0%;
       transition: width 0.5s ease;
@@ -99,12 +133,14 @@
     }
     .stat-label {
       font-size: 12px;
-      color: #94a3b8;
+      color: var(--muted);
     }
   </style>
 </head>
 <body>
-  <h1>Day 5: Level Up</h1>
+  <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
+  
+  <h1>Day 6: Theme Switcher</h1>
   <p class="quote" id="quote">Loading motivation...</p>
   
   <div class="card">
@@ -112,7 +148,7 @@
     
     <div class="stats">
       <div class="stat">
-        <div id="dayCount">5</div>
+        <div id="dayCount">6</div>
         <div class="stat-label">Day</div>
       </div>
       <div class="stat">
@@ -151,8 +187,20 @@
       "Small steps daily lead to massive results."
     ];
     
-    let day = parseInt(localStorage.getItem('codingDay')) || 5;
+    let day = parseInt(localStorage.getItem('codingDay')) || 6;
     let hoursLog = JSON.parse(localStorage.getItem('hoursLog')) || [];
+    let theme = localStorage.getItem('theme') || 'dark';
+    
+    function applyTheme() {
+      document.documentElement.setAttribute('data-theme', theme);
+      document.querySelector('.theme-toggle').textContent = theme === 'dark' ? '🌙' : '☀️';
+    }
+    
+    function toggleTheme() {
+      theme = theme === 'dark' ? 'light' : 'dark';
+      localStorage.setItem('theme', theme);
+      applyTheme();
+    }
     
     function showQuote() {
       let randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
@@ -198,15 +246,18 @@
     function resetAll() {
       if(confirm('Reset everything?')) {
         localStorage.clear();
-        day = 5;
+        day = 6;
         hoursLog = [];
+        theme = 'dark';
         updateUI();
         showQuote();
+        applyTheme();
       }
     }
     
     updateUI();
     showQuote();
+    applyTheme();
   </script>
 </body>
 </html>
