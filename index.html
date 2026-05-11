@@ -437,7 +437,11 @@
     if(Notification.permission === "granted") {
       localStorage.setItem('remindersEnabled', 'true');
       scheduleNotification();
-    }
+    }<script>
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/sw.js');
+}
+</script>
   </script>
 </body>
 </html>
