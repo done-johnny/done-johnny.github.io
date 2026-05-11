@@ -1,8 +1,9 @@
 {
-  "name": "Coding Tracker",
-  "short_name": "Tracker", 
-  "start_url": "/",
+  "name": "Dev Tracker",
+  "short_name": "DevTracker",
+  "start_url": ".",
   "display": "standalone",
-  "background_color": "#0f172a",
-  "theme_color": "#0f172a"
+  "background_color": "#0a0a0f",
+  "theme_color": "#0a0a0f",
+  "icons": [{"src": "icon-512.png", "sizes": "512x512", "type": "image/png"}]
 }
