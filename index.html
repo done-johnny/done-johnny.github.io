@@ -2,7 +2,8 @@
 <html>
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Day 6 - I'm a Dev Now</title>
+  <title>Day 8 - I'm a Dev Now</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     :root {
       --bg: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
@@ -12,8 +13,9 @@
       --input: #334155;
       --green: #22c55e;
       --red: #ef4444;
+      --blue: #3b82f6;
     }
-    
+
     [data-theme="light"] {
       --bg: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
       --card: #ffffff;
@@ -22,8 +24,9 @@
       --input: #e2e8f0;
       --green: #16a34a;
       --red: #dc2626;
+      --blue: #2563eb;
     }
-    
+
     body {
       background: var(--bg);
       color: var(--text);
@@ -33,18 +36,18 @@
       min-height: 100vh;
       transition: all 0.3s ease;
     }
-    h1 { 
-      color: var(--text); 
+    h1 {
+      color: var(--text);
       font-size: 26px;
       margin-bottom: 5px;
     }
-    .quote {
+   .quote {
       font-style: italic;
       color: var(--muted);
       margin: 15px 0;
       font-size: 14px;
     }
-    .theme-toggle {
+   .theme-toggle {
       position: absolute;
       top: 20px;
       right: 20px;
@@ -55,7 +58,7 @@
       cursor: pointer;
       font-size: 20px;
     }
-    .card {
+   .card {
       background: var(--card);
       padding: 20px;
       border-radius: 16px;
@@ -90,6 +93,16 @@
       background: var(--red);
       margin-top: 15px;
     }
+    button.secondary {
+      background: var(--blue);
+      width: 48%;
+      display: inline-block;
+    }
+   .btn-row {
+      display: flex;
+      gap: 4%;
+      margin-top: 10px;
+    }
     hr {
       border-color: var(--input);
       margin: 20px 0;
@@ -110,45 +123,52 @@
       padding: 10px;
       border-radius: 8px;
     }
-    .progress-bar {
+   .progress-bar {
       background: var(--input);
       height: 24px;
       border-radius: 12px;
       overflow: hidden;
       margin: 15px 0;
     }
-    .progress-fill {
+   .progress-fill {
       background: linear-gradient(90deg, var(--green), #16a34a);
       height: 100%;
       width: 0%;
       transition: width 0.5s ease;
     }
-    .stats {
+   .stats {
       display: flex;
       justify-content: space-around;
       margin: 20px 0;
     }
-    .stat {
+   .stat {
       text-align: center;
     }
-    .stat-label {
+   .stat-label {
       font-size: 12px;
       color: var(--muted);
+    }
+    canvas {
+      margin-top: 20px;
+      max-height: 200px;
+    }
+    input[type="file"] {
+      display: none;
     }
   </style>
 </head>
 <body>
   <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
-  
-  <h1>Day 6: Theme Switcher</h1>
+
+  <h1>Day 8: Data Backup</h1>
   <p class="quote" id="quote">Loading motivation...</p>
-  
+
   <div class="card">
     <p><strong>Done Johnny</strong> | Goal: Remote job by Dec 2027</p>
-    
+
     <div class="stats">
       <div class="stat">
-        <div id="dayCount">6</div>
+        <div id="dayCount">8</div>
         <div class="stat-label">Day</div>
       </div>
       <div class="stat">
@@ -160,20 +180,28 @@
         <div class="stat-label">Hours</div>
       </div>
     </div>
-    
+
     <div class="progress-bar">
       <div class="progress-fill" id="progressFill"></div>
     </div>
     <p><span id="progressText">0%</span> to 100 hours</p>
-    
+
+    <canvas id="hoursChart"></canvas>
+
     <input type="number" id="hoursInput" placeholder="Hours coded today" min="0" step="0.5">
     <button onclick="logHours()">Log Hours</button>
-    
+
+    <div class="btn-row">
+      <button class="secondary" onclick="exportData()">Export Data</button>
+      <label for="importFile" class="secondary" style="padding:14px; cursor:pointer; display:inline-block; text-align:center;">Import Data</label>
+      <input type="file" id="importFile" accept=".json" onchange="importData(event)">
+    </div>
+
     <hr>
-    
+
     <h3>History</h3>
     <ul id="historyList"></ul>
-    
+
     <button class="reset" onclick="resetAll()">Reset All</button>
   </div>
 
@@ -186,67 +214,158 @@
       "Discipline is choosing what you want most over what you want now.",
       "Small steps daily lead to massive results."
     ];
-    
-    let day = parseInt(localStorage.getItem('codingDay')) || 6;
+
+    let day = parseInt(localStorage.getItem('codingDay')) || 8;
     let hoursLog = JSON.parse(localStorage.getItem('hoursLog')) || [];
     let theme = localStorage.getItem('theme') || 'dark';
-    
+    let chart;
+
     function applyTheme() {
       document.documentElement.setAttribute('data-theme', theme);
-      document.querySelector('.theme-toggle').textContent = theme === 'dark' ? '🌙' : '☀️';
+      document.querySelector('.theme-toggle').textContent = theme === 'dark'? '🌙' : '☀️';
+      updateChartColors();
     }
-    
+
     function toggleTheme() {
-      theme = theme === 'dark' ? 'light' : 'dark';
+      theme = theme === 'dark'? 'light' : 'dark';
       localStorage.setItem('theme', theme);
       applyTheme();
     }
-    
+
     function showQuote() {
       let randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
       document.getElementById('quote').textContent = '"' + randomQuote + '"';
     }
-    
+
+    function initChart() {
+      const ctx = document.getElementById('hoursChart').getContext('2d');
+      chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: [],
+          datasets: [{
+            label: 'Hours Coded',
+            data: [],
+            borderColor: '#22c55e',
+            backgroundColor: 'rgba(34, 197, 94, 0.2)',
+            tension: 0.3
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            y: { beginAtZero: true, ticks: { color: '#94a3b8' } },
+            x: { ticks: { color: '#94a3b8' } }
+          }
+        }
+      });
+    }
+
+    function updateChartColors() {
+      if(!chart) return;
+      const color = theme === 'dark'? '#94a3b8' : '#64748b';
+      chart.options.scales.y.ticks.color = color;
+      chart.options.scales.x.ticks.color = color;
+      chart.update();
+    }
+
+    function updateChart() {
+      if(!chart) return;
+      const labels = hoursLog.map(e => 'Day ' + e.day);
+      const data = hoursLog.map(e => e.hours);
+      chart.data.labels = labels;
+      chart.data.datasets[0].data = data;
+      chart.update();
+    }
+
     function updateUI() {
       document.getElementById('dayCount').textContent = day;
       document.getElementById('streak').textContent = hoursLog.length;
-      
+
       let total = hoursLog.reduce((sum, entry) => sum + entry.hours, 0);
       document.getElementById('totalHours').textContent = total;
-      
+
       let percent = Math.min((total / 100) * 100, 100);
       document.getElementById('progressFill').style.width = percent + '%';
       document.getElementById('progressText').textContent = Math.round(percent) + '%';
-      
+
       let list = document.getElementById('historyList');
       list.innerHTML = '';
       hoursLog.slice().reverse().forEach(entry => {
         list.innerHTML += `<li>Day ${entry.day}: ${entry.hours}h</li>`;
       });
+
+      updateChart();
     }
-    
+
     function logHours() {
       let hours = parseFloat(document.getElementById('hoursInput').value);
       if(!hours || hours <= 0) {
         alert('Enter valid hours');
         return;
       }
-      
+
       hoursLog.push({day: day, hours: hours});
       localStorage.setItem('hoursLog', JSON.stringify(hoursLog));
       document.getElementById('hoursInput').value = '';
-      
+
       day++;
       localStorage.setItem('codingDay', day);
       updateUI();
       showQuote();
       alert(`Logged ${hours}h ✅ Day ${day-1} complete!`);
     }
-    
+
+    function exportData() {
+      const data = {
+        day: day,
+        hoursLog: hoursLog,
+        theme: theme,
+        exportDate: new Date().toISOString()
+      };
+
+      const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'coding-tracker-backup.json';
+      a.click();
+      URL.revokeObjectURL(url);
+      alert('Data exported! Check your Downloads folder.');
+    }
+
+    function importData(event) {
+      const file = event.target.files[0];
+      if(!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const data = JSON.parse(e.target.result);
+          if(confirm('This will overwrite your current data. Continue?')) {
+            day = data.day || 8;
+            hoursLog = data.hoursLog || [];
+            theme = data.theme || 'dark';
+            localStorage.setItem('codingDay', day);
+            localStorage.setItem('hoursLog', JSON.stringify(hoursLog));
+            localStorage.setItem('theme', theme);
+            updateUI();
+            applyTheme();
+            alert('Data imported successfully!');
+          }
+        } catch(err) {
+          alert('Invalid file format');
+        }
+      };
+      reader.readAsText(file);
+    }
+
     function resetAll() {
       if(confirm('Reset everything?')) {
         localStorage.clear();
-        day = 6;
+        day = 8;
         hoursLog = [];
         theme = 'dark';
         updateUI();
@@ -254,7 +373,8 @@
         applyTheme();
       }
     }
-    
+
+    initChart();
     updateUI();
     showQuote();
     applyTheme();
