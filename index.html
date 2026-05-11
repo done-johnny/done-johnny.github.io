@@ -177,7 +177,16 @@
 
   <div class="card">
     <p><strong>Done Johnny</strong> | Goal: Remote job by Dec 2027</p>
+function logHours() {
+  let hours = parseFloat(document.getElementById('hoursInput').value);
+  if(!hours || hours <= 0) {
+    alert('Enter valid hours');
+    return;
+  }
 
+  hoursLog.push({day: day, hours: hours});
+  localStorage.setItem('hoursLog', JSON.stringify(hoursLog));
+  document.getElementById('hoursInput').value = '';
     <div class="stats">
       <div class="stat">
         <div id="dayCount">9</div>
