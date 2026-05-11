@@ -1,9 +1,8 @@
-
 <!DOCTYPE html>
 <html>
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Day 2 - I'm a Dev Now</title>
+  <title>Day 3 - I'm a Dev Now</title>
   <style>
     body {
       background: #0f172a;
@@ -26,14 +25,17 @@
       margin-left: auto;
       margin-right: auto;
     }
-    button {
-      background: #22c55e;
+    input, button {
+      background: #334155;
       color: white;
       border: none;
-      padding: 12px 24px;
+      padding: 12px;
       border-radius: 8px;
       font-size: 16px;
-      margin-top: 15px;
+      margin-top: 10px;
+    }
+    button {
+      background: #22c55e;
       cursor: pointer;
     }
     button.reset {
@@ -45,49 +47,83 @@
       margin: 20px 0;
       border-style: solid;
     }
-    #dayCount {
+    #dayCount, #totalHours {
       font-size: 36px;
       color: #22c55e;
+    }
+    ul {
+      text-align: left;
+      list-style: none;
+      padding: 0;
+    }
+    li {
+      background: #334155;
+      margin: 5px 0;
+      padding: 8px;
+      border-radius: 6px;
     }
   </style>
 </head>
 <body>
-  <h1>Day 2: My Coding Journey</h1>
+  <h1>Day 3: Track My Hours</h1>
   <div class="card">
     <p><strong>Name:</strong> Done Johnny</p>
-    <p><strong>Phone:</strong> 08107811087</p>
     <p><strong>Goal:</strong> Get remote job by coding by Dec 2027</p>
-    <p><strong>Started:</strong> May 9, 2026</p>
     
     <hr>
     
-    <h2>Day <span id="dayCount">2</span></h2>
-    <p id="status">Keep building!</p>
+    <h2>Day <span id="dayCount">3</span></h2>
+    <p><strong>Total Hours:</strong> <span id="totalHours">0</span>h</p>
     
-    <button onclick="completeDay()">Day complete!</button>
-    <button class="reset" onclick="resetDay()">Reset</button>
+    <input type="number" id="hoursInput" placeholder="Hours coded today" min="0" step="0.5">
+    <button onclick="logHours()">Log Hours</button>
+    
+    <hr>
+    
+    <h3>History</h3>
+    <ul id="historyList"></ul>
+    
+    <button class="reset" onclick="resetAll()">Reset All</button>
   </div>
 
   <script>
-    let day = localStorage.getItem('codingDay') || 2;
+    let day = parseInt(localStorage.getItem('codingDay')) || 3;
+    let hoursLog = JSON.parse(localStorage.getItem('hoursLog')) || [];
     
     function updateUI() {
       document.getElementById('dayCount').textContent = day;
-      document.getElementById('status').textContent = 
-        day > 2 ? `Day ${day} in progress. Keep going!` : "Keep building!";
+      let total = hoursLog.reduce((sum, entry) => sum + entry.hours, 0);
+      document.getElementById('totalHours').textContent = total;
+      
+      let list = document.getElementById('historyList');
+      list.innerHTML = '';
+      hoursLog.slice().reverse().forEach(entry => {
+        list.innerHTML += `<li>Day ${entry.day}: ${entry.hours}h</li>`;
+      });
     }
     
-    function completeDay() {
-      day = parseInt(day) + 1;
+    function logHours() {
+      let hours = parseFloat(document.getElementById('hoursInput').value);
+      if(!hours || hours <= 0) {
+        alert('Enter valid hours');
+        return;
+      }
+      
+      hoursLog.push({day: day, hours: hours});
+      localStorage.setItem('hoursLog', JSON.stringify(hoursLog));
+      document.getElementById('hoursInput').value = '';
+      
+      day++;
       localStorage.setItem('codingDay', day);
       updateUI();
-      alert(`Day ${day-1} done ✅ Streak: ${day-1} days`);
+      alert(`Logged ${hours}h ✅ Day ${day-1} complete!`);
     }
     
-    function resetDay() {
-      if(confirm('Reset your streak?')) {
-        day = 2;
-        localStorage.setItem('codingDay', 2);
+    function resetAll() {
+      if(confirm('Reset everything?')) {
+        localStorage.clear();
+        day = 3;
+        hoursLog = [];
         updateUI();
       }
     }
@@ -95,4 +131,4 @@
     updateUI();
   </script>
 </body>
-</html> Day 2 update add- streak tracker 
+</html>Day 3 update -add hours tracker 
