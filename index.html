@@ -433,11 +433,10 @@
     showQuote();
     applyTheme();
 
-    // Check notification permission on load
+        // Check notification permission on load
     if(Notification.permission === "granted") {
       localStorage.setItem('remindersEnabled', 'true');
       scheduleNotification();
-    }<script>
     }
   </script>
 
