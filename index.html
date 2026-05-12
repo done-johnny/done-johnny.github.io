@@ -278,11 +278,19 @@ function updateUI() {
   document.getElementById('businessFill').style.width = businessPercent + '%';
   document.getElementById('jobPercent').textContent = Math.round(jobPercent) + '%';
   document.getElementById('businessPercent').textContent = Math.round(businessPercent) + '%';
-document.getElementById('jobFill').style.width = jobPercent + '%';
-document.getElementById('businessFill').style.width = businessPercent + '%';
-document.getElementById('jobPercent').textContent = Math.round(jobPercent) + '%';
-document.getElementById('businessPercent').textContent = Math.round(businessPercent) + '%';
 
+let focusPercent = total > 0 ? Math.round((jobTotal / total) * 100) : 0;
+let focusEl = document.getElementById('focusScore');
+
+focusEl.textContent = `Focus: ${focusPercent}% on Job Hunt`;
+
+if (focusPercent < 60) {
+  focusEl.style.color = 'var(--red)';
+} else if (focusPercent < 80) {
+  focusEl.style.color = 'var(--orange)';
+} else {
+  focusEl.style.color = 'var(--green)';
+}
 // Paste this here ↓
 let focusPercent = total > 0 ? Math.round((jobTotal / total) * 100) : 0;
 let focusEl = document.getElementById('focusScore');
