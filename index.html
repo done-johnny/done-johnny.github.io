@@ -282,7 +282,9 @@ function updateChart() {
   chart.update();
 }
 
-function updateUI() {
+
+
+  function updateUI() {
   document.getElementById('dayCount').textContent = day;
   document.getElementById('streak').textContent = hoursLog.length;
 
@@ -312,6 +314,12 @@ function updateUI() {
   } else {
     focusEl.style.color = 'var(--green)';
   }
+
+  // Weekly goal bar
+  const weeklyGoal = 20;
+  const goalPercent = Math.min(100, (total / weeklyGoal) * 100);
+  document.getElementById('weeklyGoalText').textContent = `${total}h / ${weeklyGoal}h`;
+  document.getElementById('weeklyGoalBar').style.width = goalPercent + '%';
 
   let list = document.getElementById('historyList');
   list.innerHTML = '';
