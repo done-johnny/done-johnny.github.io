@@ -309,7 +309,7 @@ function updateUI() {
   });
 
 
-  // function updateUI() {
+  // function update
   let totalHours = hoursLog.reduce((sum, e) => sum + e.hours, 0);
   let jobHours = hoursLog.filter(e => e.type === 'job').reduce((sum, e) => sum + e.hours, 0);
   let focusPct = totalHours > 0 ? Math.round((jobHours / totalHours) * 100) : 0;
