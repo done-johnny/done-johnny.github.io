@@ -301,26 +301,7 @@ hoursLog.slice().reverse().forEach(entry => {
   let liClass = entry.type === 'job'? 'job' : 'business';
   list.innerHTML += `<li class="${liClass}">${tagText} Day ${entry.day}: ${entry.hours}h${noteText}</li>`;
 });
-let focusPercent = total > 0 ? Math.round((jobTotal / total) * 100) : 0;
-let focusEl = document.getElementById('focusScore');
 
-focusEl.textContent = `Focus: ${focusPercent}% on Job Hunt`;
-
-if (focusPercent < 60) {
-  focusEl.style.color = 'var(--red)';
-} else if (focusPercent < 80) {
-  focusEl.style.color = 'var(--orange)';
-} else {
-  focusEl.style.color = 'var(--green)';
-}
-// Paste this here ↓
-
-  hoursLog.slice().reverse().forEach(entry => {
-    let noteText = entry.note? ` - ${entry.note}` : '';
-    let tagText = entry.type === 'job'? '<span class="tag job">Job Hunt</span>' : '<span class="tag business">Business</span>';
-    let liClass = entry.type === 'job'? 'job' : 'business';
-    list.innerHTML += `<li class="${liClass}">${tagText} Day ${entry.day}: ${entry.hours}h${noteText}</li>`;
-  });
 
   updateChart();
   updateReminderStatus();
