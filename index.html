@@ -433,7 +433,37 @@ function resetAll() {
     updateUI();
     showQuote();
     applyTheme();
+  }function checkWeeklyReview() {
+  let today = new Date();
+  let lastShown = localStorage.getItem('lastWeekReview');
+
+  // Change 'true' to test it now. Change back for Sundays only.
+  // if(true) {
+  if(today.getDay() === 0 && lastShown !== today.toDateString()) {
+    let last7Days = hoursLog.filter(e => {
+      let entryDate = new Date();
+      entryDate.setDate(entryDate.getDate() - (day - e.day));
+      return (today - entryDate) / (1000*60*60*24) <= 7;
+    });
+
+    let weekHours = last7Days.reduce((sum, e) => sum + e.hours, 0);
+    let weekAvg = (weekHours / 7).toFixed(1);
+    let jobHours = last7Days.filter(e => e.type === 'job').reduce((sum, e) => sum + e.hours, 0);
+    let focus = weekHours > 0 ? Math.round((jobHours / weekHours) * 100) : 0;
+
+    document.getElementById('weekStats').textContent = 
+      `This week: ${weekHours}h total, ${weekAvg}h/day average`;
+    document.getElementById('weekFocus').textContent = 
+      `Job Hunt focus: ${focus}%`;
+
+    document.getElementById('weeklyReview').style.display = 'block';
+    localStorage.setItem('lastWeekReview', today.toDateString());
   }
+}
+
+function closeWeeklyReview() {
+  document.getElementById('weeklyReview').style.display = 'none';
+      }
 }
 
 initChart();
