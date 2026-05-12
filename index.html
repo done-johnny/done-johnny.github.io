@@ -51,7 +51,7 @@ h1 { color: var(--text); font-size: 26px; margin-bottom: 5px; }
   max-width: 500px; margin-left: auto; margin-right: auto;
   box-shadow: 0 4px 20px rgba(0,0,0,0.3); transition: all 0.3s ease;
 }
-input, button {
+input, button, select {
   background: var(--input); color: var(--text); border: none; padding: 14px;
   border-radius: 10px; font-size: 16px; margin-top: 10px; width: 100%; box-sizing: border-box;
 }
@@ -64,13 +64,33 @@ button.reminder { background: var(--orange); margin-top: 15px; }
 hr { border-color: var(--input); margin: 20px 0; border-style: solid; }
 #dayCount, #totalHours, #streak { font-size: 32px; color: var(--green); }
 ul { text-align: left; list-style: none; padding: 0; }
-li { background: var(--input); margin: 6px 0; padding: 10px; border-radius: 8px; }
+li {
+  background: var(--input);
+  margin: 6px 0;
+  padding: 10px;
+  border-radius: 8px;
+  border-left: 4px solid var(--muted);
+}
+li.job { border-left-color: var(--green); }
+li.business { border-left-color: var(--orange); }
 .progress-bar {
-  background: var(--input); height: 24px; border-radius: 12px; overflow: hidden; margin: 15px 0;
+  background: var(--input);
+  height: 24px;
+  border-radius: 12px;
+  overflow: hidden;
+  margin: 15px 0;
+  display: flex;
 }
 .progress-fill {
-  background: linear-gradient(90deg, var(--green), #16a34a); height: 100%;
-  width: 0%; transition: width 0.5s ease;
+  height: 100%;
+  width: 0%;
+  transition: width 0.5s ease;
+}
+.progress-fill.job {
+  background: linear-gradient(90deg, var(--green), #16a34a);
+}
+.progress-fill.business {
+  background: linear-gradient(90deg, var(--orange), #ea580c);
 }
 .stats { display: flex; justify-content: space-around; margin: 20px 0; }
 .stat { text-align: center; }
@@ -78,6 +98,22 @@ li { background: var(--input); margin: 6px 0; padding: 10px; border-radius: 8px;
 canvas { margin-top: 20px; max-height: 200px; }
 input[type="file"] { display: none; }
 .reminder-status { font-size: 12px; color: var(--muted); margin-top: 5px; }
+.tag {
+  display: inline-block;
+  font-size: 12px;
+  padding: 2px 8px;
+  border-radius: 12px;
+  margin-right: 6px;
+  font-weight: bold;
+}
+.tag.job { background: var(--green); color: white; }
+.tag.business { background: var(--orange); color: white; }
+.breakdown {
+  display:flex;
+  justify-content:space-around;
+  margin-top:10px;
+  font-size:14px;
+}
 </style>
 </head>
 <body>
@@ -104,14 +140,25 @@ input[type="file"] { display: none; }
     </div>
   </div>
 
-  <div class="progress-bar">
-    <div class="progress-fill" id="progressFill"></div>
+  <div class="breakdown">
+    <div>💼 Job Hunt: <span id="jobHours">0</span>h</div>
+    <div>🚀 Business: <span id="businessHours">0</span>h</div>
   </div>
-  <p><span id="progressText">0%</span> to 100 hours</p>
+
+  <div class="progress-bar">
+    <div class="progress-fill job" id="jobFill"></div>
+    <div class="progress-fill business" id="businessFill"></div>
+  </div>
+  <p><span id="jobPercent">0%</span> Job Hunt • <span id="businessPercent">0%</span> Business</p>
 
   <canvas id="hoursChart"></canvas>
 
   <input type="number" id="hoursInput" placeholder="Hours coded today" min="0" step="0.5">
+
+  <select id="typeInput">
+    <option value="job">Job Hunt</option>
+    <option value="business">Business</option>
+  </select>
 
   <label for="noteInput" style="display:block; text-align:left; margin-top:10px; font-size:14px; color:var(--muted);">
     What did you work on?
@@ -216,30 +263,29 @@ function updateUI() {
   document.getElementById('dayCount').textContent = day;
   document.getElementById('streak').textContent = hoursLog.length;
 
-  let total = hoursLog.reduce((sum, entry) => sum + entry.hours, 0);
-  document.getElementById('totalHours').textContent = total;
-
   let jobTotal = hoursLog.filter(e => e.type === 'job').reduce((sum, e) => sum + e.hours, 0);
-let businessTotal = hoursLog.filter(e => e.type === 'business').reduce((sum, e) => sum + e.hours, 0);
-let total = jobTotal + businessTotal;
+  let businessTotal = hoursLog.filter(e => e.type === 'business').reduce((sum, e) => sum + e.hours, 0);
+  let total = jobTotal + businessTotal;
 
-document.getElementById('totalHours').textContent = total;
-document.getElementById('jobHours').textContent = jobTotal;
-document.getElementById('businessHours').textContent = businessTotal;
+  document.getElementById('totalHours').textContent = total;
+  document.getElementById('jobHours').textContent = jobTotal;
+  document.getElementById('businessHours').textContent = businessTotal;
 
-let jobPercent = Math.min((jobTotal / 100) * 100, 100);
-let businessPercent = Math.min((businessTotal / 100) * 100, 100);
+  let jobPercent = Math.min((jobTotal / 100) * 100, 100);
+  let businessPercent = Math.min((businessTotal / 100) * 100, 100);
 
-document.getElementById('jobFill').style.width = jobPercent + '%';
-document.getElementById('businessFill').style.width = businessPercent + '%';
-document.getElementById('jobPercent').textContent = Math.round(jobPercent) + '%';
-document.getElementById('businessPercent').textContent = Math.round(businessPercent) + '%';
+  document.getElementById('jobFill').style.width = jobPercent + '%';
+  document.getElementById('businessFill').style.width = businessPercent + '%';
+  document.getElementById('jobPercent').textContent = Math.round(jobPercent) + '%';
+  document.getElementById('businessPercent').textContent = Math.round(businessPercent) + '%';
 
   let list = document.getElementById('historyList');
   list.innerHTML = '';
   hoursLog.slice().reverse().forEach(entry => {
     let noteText = entry.note? ` - ${entry.note}` : '';
-    list.innerHTML += `<li>Day ${entry.day}: ${entry.hours}h${noteText}</li>`;
+    let tagText = entry.type === 'job'? '<span class="tag job">Job Hunt</span>' : '<span class="tag business">Business</span>';
+    let liClass = entry.type === 'job'? 'job' : 'business';
+    list.innerHTML += `<li class="${liClass}">${tagText} Day ${entry.day}: ${entry.hours}h${noteText}</li>`;
   });
 
   updateChart();
@@ -249,13 +295,14 @@ document.getElementById('businessPercent').textContent = Math.round(businessPerc
 function logHours() {
   let hours = parseFloat(document.getElementById('hoursInput').value);
   let note = document.getElementById('noteInput').value.trim();
+  let type = document.getElementById('typeInput').value;
 
   if(!hours || hours <= 0) {
     alert('Enter valid hours');
     return;
   }
 
-  hoursLog.push({day: day, hours: hours, note: note});
+  hoursLog.push({day: day, hours: hours, note: note, type: type});
   localStorage.setItem('hoursLog', JSON.stringify(hoursLog));
   document.getElementById('hoursInput').value = '';
   document.getElementById('noteInput').value = '';
