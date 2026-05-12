@@ -322,7 +322,8 @@ function updateUI() {
   // Weekly goal bar
   const weeklyGoal = 20;
   const goalPercent = Math.min(100, (total / weeklyGoal) * 100);
-  document.getElementById('weeklyGoalText').textContent = `${total}h / ${weeklyGoal}h`;
+  const left = Math.max(0, weeklyGoal - total);
+document.getElementById('weeklyGoalText').textContent = `${left}h to go`;
   document.getElementById('weeklyGoalBar').style.width = goalPercent + '%';
 
   let list = document.getElementById('historyList');
