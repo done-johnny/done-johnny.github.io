@@ -292,23 +292,7 @@ if (focusPercent < 60) {
   focusEl.style.color = 'var(--green)';
 }
 // Paste this here ↓
-let focusPercent = total > 0 ? Math.round((jobTotal / total) * 100) : 0;
-let focusEl = document.getElementById('focusScore');
 
-focusEl.textContent = `Focus: ${focusPercent}% on Job Hunt`;
-
-if (focusPercent < 60) {
-  focusEl.style.color = 'var(--red)';
-} else if (focusPercent < 80) {
-  focusEl.style.color = 'var(--orange)';
-} else {
-  focusEl.style.color = 'var(--green)';
-}
-// End paste ↑
-
-let list = document.getElementById('historyList');
-  let list = document.getElementById('historyList');
-  list.innerHTML = '';
   hoursLog.slice().reverse().forEach(entry => {
     let noteText = entry.note? ` - ${entry.note}` : '';
     let tagText = entry.type === 'job'? '<span class="tag job">Job Hunt</span>' : '<span class="tag business">Business</span>';
@@ -329,7 +313,20 @@ function logHours() {
     alert('Enter valid hours');
     return;
   }
+// Check if this will drop focus below 60%
+let tempJobTotal = hoursLog.filter(e => e.type === 'job').reduce((sum, e) => sum + e.hours, 0);
+let tempBusinessTotal = hoursLog.filter(e => e.type === 'business').reduce((sum, e) => sum + e.hours, 0);
 
+if (type === 'job') tempJobTotal += hours;
+if (type === 'business') tempBusinessTotal += hours;
+
+let tempTotal = tempJobTotal + tempBusinessTotal;
+let tempFocus = tempTotal > 0 ? (tempJobTotal / tempTotal) * 100 : 0;
+
+if (tempFocus < 60) {
+  let proceed = confirm(`Warning: This will drop your Job Hunt focus to ${Math.round(tempFocus)}%.\n\nAre you sure you want to log this?`);
+  if (!proceed) return;
+}
   hoursLog.push({day: day, hours: hours, note: note, type: type});
   localStorage.setItem('hoursLog', JSON.stringify(hoursLog));
   document.getElementById('hoursInput').value = '';
