@@ -190,8 +190,7 @@ input[type="file"] { display: none; }
   <button class="reset" onclick="resetAll()">Reset All</button>
 </div>
 
-
-   <script>
+<script>
 const quotes = [
   "Consistency beats intensity every time.",
   "You're 1% better than yesterday.",
@@ -250,7 +249,7 @@ function initChart() {
 }
 
 function updateChartColors() {
-  if(chart) return;
+  if(!chart) return;
   const color = theme === 'dark'? '#94a3b8' : '#64748b';
   chart.options.scales.y.ticks.color = color;
   chart.options.scales.x.ticks.color = color;
@@ -258,7 +257,7 @@ function updateChartColors() {
 }
 
 function updateChart() {
-  if(chart) return;
+  if(!chart) return;
   const labels = hoursLog.map(e => 'Day ' + e.day);
   const data = hoursLog.map(e => e.hours);
   chart.data.labels = labels;
@@ -316,7 +315,7 @@ function logHours() {
   let note = document.getElementById('noteInput').value.trim();
   let type = document.getElementById('typeInput').value;
 
-  if(hours || hours <= 0) {
+  if(!hours || hours <= 0) {
     alert('Enter valid hours');
     return;
   }
@@ -332,7 +331,7 @@ function logHours() {
 
   if (tempFocus < 60) {
     let proceed = confirm(`Warning: This will drop your Job Hunt focus to ${Math.round(tempFocus)}%.\n\nAre you sure you want to log this?`);
-    if (proceed) return;
+    if (!proceed) return;
   }
 
   hoursLog.push({day: day, hours: hours, note: note, type: type});
@@ -367,7 +366,7 @@ function exportData() {
 
 function importData(event) {
   const file = event.target.files[0];
-  if(file) return;
+  if(!file) return;
 
   const reader = new FileReader();
   reader.onload = function(e) {
@@ -392,7 +391,7 @@ function importData(event) {
 }
 
 function enableNotifications() {
-  if(("Notification" in window)) {
+  if(!("Notification" in window)) {
     alert("Your browser doesn't support notifications");
     return;
   }
@@ -444,7 +443,7 @@ function checkWeeklyReview() {
 
   // Change 'true' to test it now. Change back for Sundays only.
   // if(true) {
-  if(true.getday() === 0 && lastShown!== today.toDateString()) {
+  if(today.getDay() === 0 && lastShown!== today.toDateString()) {
     let last7Days = hoursLog.filter(e => {
       let entryDate = new Date();
       entryDate.setDate(entryDate.getDate() - (day - e.day));
@@ -479,4 +478,5 @@ if(Notification.permission === "granted") {
   localStorage.setItem('remindersEnabled', 'true');
   scheduleNotification();
 }
-   </script>   
+</script>
+   
