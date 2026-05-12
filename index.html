@@ -309,9 +309,7 @@ function updateUI() {
   });
 
 
-  updateChart();
-  updateReminderStatus();
-  checkweeklyReview();function updateUI() {
+  // function updateUI() {
   let totalHours = hoursLog.reduce((sum, e) => sum + e.hours, 0);
   let jobHours = hoursLog.filter(e => e.type === 'job').reduce((sum, e) => sum + e.hours, 0);
   let focusPct = totalHours > 0 ? Math.round((jobHours / totalHours) * 100) : 0;
@@ -328,9 +326,8 @@ function updateUI() {
   updateChart();
   updateReminderStatus();
   checkWeeklyReview();  // <-- add this line here
+}-- add this line here
   }
-}
-
 function logHours() {
   let hours = parseFloat(document.getElementById('hoursInput').value);
   let note = document.getElementById('noteInput').value.trim();
