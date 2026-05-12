@@ -219,9 +219,21 @@ function updateUI() {
   let total = hoursLog.reduce((sum, entry) => sum + entry.hours, 0);
   document.getElementById('totalHours').textContent = total;
 
-  let percent = Math.min((total / 100) * 100, 100);
-  document.getElementById('progressFill').style.width = percent + '%';
-  document.getElementById('progressText').textContent = Math.round(percent) + '%';
+  let jobTotal = hoursLog.filter(e => e.type === 'job').reduce((sum, e) => sum + e.hours, 0);
+let businessTotal = hoursLog.filter(e => e.type === 'business').reduce((sum, e) => sum + e.hours, 0);
+let total = jobTotal + businessTotal;
+
+document.getElementById('totalHours').textContent = total;
+document.getElementById('jobHours').textContent = jobTotal;
+document.getElementById('businessHours').textContent = businessTotal;
+
+let jobPercent = Math.min((jobTotal / 100) * 100, 100);
+let businessPercent = Math.min((businessTotal / 100) * 100, 100);
+
+document.getElementById('jobFill').style.width = jobPercent + '%';
+document.getElementById('businessFill').style.width = businessPercent + '%';
+document.getElementById('jobPercent').textContent = Math.round(jobPercent) + '%';
+document.getElementById('businessPercent').textContent = Math.round(businessPercent) + '%';
 
   let list = document.getElementById('historyList');
   list.innerHTML = '';
