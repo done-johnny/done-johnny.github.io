@@ -190,7 +190,8 @@ input[type="file"] { display: none; }
   <button class="reset" onclick="resetAll()">Reset All</button>
 </div>
 
-<script>
+
+   <script>
 const quotes = [
   "Consistency beats intensity every time.",
   "You're 1% better than yesterday.",
@@ -285,8 +286,7 @@ function updateUI() {
   document.getElementById('jobPercent').textContent = Math.round(jobPercent) + '%';
   document.getElementById('businessPercent').textContent = Math.round(businessPercent) + '%';
 
-  // Focus Score
-  let focusPercent = total > 0 ? Math.round((jobTotal / total) * 100) : 0;
+  let focusPercent = total > 0? Math.round((jobTotal / total) * 100) : 0;
   let focusEl = document.getElementById('focusScore');
   focusEl.textContent = `Focus: ${focusPercent}% on Job Hunt`;
   if (focusPercent < 60) {
@@ -297,7 +297,6 @@ function updateUI() {
     focusEl.style.color = 'var(--green)';
   }
 
-  // History List
   let list = document.getElementById('historyList');
   list.innerHTML = '';
   hoursLog.slice().reverse().forEach(entry => {
@@ -307,9 +306,11 @@ function updateUI() {
     list.innerHTML += `<li class="${liClass}">${tagText} Day ${entry.day}: ${entry.hours}h${noteText}</li>`;
   });
 
+  updateChart();
+  updateReminderStatus();
+  checkWeeklyReview();
+}
 
-
-  }
 function logHours() {
   let hours = parseFloat(document.getElementById('hoursInput').value);
   let note = document.getElementById('noteInput').value.trim();
@@ -319,20 +320,21 @@ function logHours() {
     alert('Enter valid hours');
     return;
   }
-// Check if this will drop focus below 60%
-let tempJobTotal = hoursLog.filter(e => e.type === 'job').reduce((sum, e) => sum + e.hours, 0);
-let tempBusinessTotal = hoursLog.filter(e => e.type === 'business').reduce((sum, e) => sum + e.hours, 0);
 
-if (type === 'job') tempJobTotal += hours;
-if (type === 'business') tempBusinessTotal += hours;
+  let tempJobTotal = hoursLog.filter(e => e.type === 'job').reduce((sum, e) => sum + e.hours, 0);
+  let tempBusinessTotal = hoursLog.filter(e => e.type === 'business').reduce((sum, e) => sum + e.hours, 0);
 
-let tempTotal = tempJobTotal + tempBusinessTotal;
-let tempFocus = tempTotal > 0 ? (tempJobTotal / tempTotal) * 100 : 0;
+  if (type === 'job') tempJobTotal += hours;
+  if (type === 'business') tempBusinessTotal += hours;
 
-if (tempFocus < 60) {
-  let proceed = confirm(`Warning: This will drop your Job Hunt focus to ${Math.round(tempFocus)}%.\n\nAre you sure you want to log this?`);
-  if (!proceed) return;
-}
+  let tempTotal = tempJobTotal + tempBusinessTotal;
+  let tempFocus = tempTotal > 0? (tempJobTotal / tempTotal) * 100 : 0;
+
+  if (tempFocus < 60) {
+    let proceed = confirm(`Warning: This will drop your Job Hunt focus to ${Math.round(tempFocus)}%.\n\nAre you sure you want to log this?`);
+    if (!proceed) return;
+  }
+
   hoursLog.push({day: day, hours: hours, note: note, type: type});
   localStorage.setItem('hoursLog', JSON.stringify(hoursLog));
   document.getElementById('hoursInput').value = '';
@@ -419,13 +421,11 @@ function scheduleNotification() {
   }, 60000);
 }
 
-  
+function updateReminderStatus() {
+  const status = localStorage.getItem('remindersEnabled') === 'true'? 'On' : 'Off';
+  document.getElementById('reminderStatus').textContent = `Reminders: ${status}`;
 }
 
-function closeWeeklyReview() {
-  document.getElementById('weeklyReview').style.display = 'none';
-      }
-}
 function resetAll() {
   if(confirm('Reset everything?')) {
     localStorage.clear();
@@ -436,7 +436,7 @@ function resetAll() {
     showQuote();
     applyTheme();
   }
-} // end of resetAll
+}
 
 function checkWeeklyReview() {
   let today = new Date();
@@ -444,7 +444,7 @@ function checkWeeklyReview() {
 
   // Change 'true' to test it now. Change back for Sundays only.
   // if(true) {
-  if(true() === 0 && lastShown !== today.toDateString()) {
+  if(today.getDay() === 0 && lastShown!== today.toDateString()) {
     let last7Days = hoursLog.filter(e => {
       let entryDate = new Date();
       entryDate.setDate(entryDate.getDate() - (day - e.day));
@@ -454,11 +454,11 @@ function checkWeeklyReview() {
     let weekHours = last7Days.reduce((sum, e) => sum + e.hours, 0);
     let weekAvg = (weekHours / 7).toFixed(1);
     let jobHours = last7Days.filter(e => e.type === 'job').reduce((sum, e) => sum + e.hours, 0);
-    let focus = weekHours > 0 ? Math.round((jobHours / weekHours) * 100) : 0;
+    let focus = weekHours > 0? Math.round((jobHours / weekHours) * 100) : 0;
 
-    document.getElementById('weekStats').textContent = 
+    document.getElementById('weekStats').textContent =
       `This week: ${weekHours}h total, ${weekAvg}h/day average`;
-    document.getElementById('weekFocus').textContent = 
+    document.getElementById('weekFocus').textContent =
       `Job Hunt focus: ${focus}%`;
 
     document.getElementById('weeklyReview').style.display = 'block';
@@ -474,21 +474,9 @@ initChart();
 updateUI();
 showQuote();
 applyTheme();
-initChart();
-updateUI();
-showQuote();
-applyTheme();
 
 if(Notification.permission === "granted") {
   localStorage.setItem('remindersEnabled', 'true');
   scheduleNotification();
 }
-</script>
-
-<script>
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('/sw.js');
-}
-</script>
-</body>
-</html>
+   </script>   
