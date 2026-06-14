@@ -1,511 +1,92 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<link rel="manifest" href="/manifest.json">
-<meta name="theme-color" content="#0f172a">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Day 9 - I'm a Dev Now</title>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<style>
-:root {
-  --bg: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-  --card: #1e293b;
-  --text: #fbbf24;
-  --muted: #94a3b8;
-  --input: #334155;
-  --green: #22c55e;
-  --red: #ef4444;
-  --blue: #3b82f6;
-  --orange: #f97316;
-}
-
-[data-theme="light"] {
-  --bg: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-  --card: #ffffff;
-  --text: #1e293b;
-  --muted: #64748b;
-  --input: #e2e8f0;
-  --green: #16a34a;
-  --red: #dc2626;
-  --blue: #2563eb;
-  --orange: #ea580c;
-}
-
-body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: Arial, sans-serif;
-  text-align: center;
-  padding: 20px 15px;
-  min-height: 100vh;
-  transition: all 0.3s ease;
-}
-h1 { color: var(--text); font-size: 26px; margin-bottom: 5px; }
-.quote { font-style: italic; color: var(--muted); margin: 15px 0; font-size: 14px; }
-.theme-toggle {
-  position: absolute; top: 20px; right: 20px; background: var(--input);
-  border: none; padding: 10px 15px; border-radius: 20px; cursor: pointer; font-size: 20px;
-}
-.card {
-  background: var(--card); padding: 20px; border-radius: 16px; margin-top: 15px;
-  max-width: 500px; margin-left: auto; margin-right: auto;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.3); transition: all 0.3s ease;
-}
-input, button, select {
-  background: var(--input); color: var(--text); border: none; padding: 14px;
-  border-radius: 10px; font-size: 16px; margin-top: 10px; width: 100%; box-sizing: border-box;
-}
-button { background: var(--green); cursor: pointer; font-weight: bold; color: white; }
-button:active { transform: scale(0.98); }
-button.reset { background: var(--red); margin-top: 15px; }
-button.secondary { background: var(--blue); width: 48%; display: inline-block; }
-button.reminder { background: var(--orange); margin-top: 15px; }
-.btn-row { display: flex; gap: 4%; margin-top: 10px; }
-hr { border-color: var(--input); margin: 20px 0; border-style: solid; }
-#dayCount, #totalHours, #streak { font-size: 32px; color: var(--green); }
-ul { text-align: left; list-style: none; padding: 0; }
-li {
-  background: var(--input);
-  margin: 6px 0;
-  padding: 10px;
-  border-radius: 8px;
-  border-left: 4px solid var(--muted);
-}
-li.job { border-left-color: var(--green); }
-li.business { border-left-color: var(--orange); }
-.progress-bar {
-  background: var(--input);
-  height: 24px;
-  border-radius: 12px;
-  overflow: hidden;
-  margin: 15px 0;
-  display: flex;
-}
-.progress-fill {
-  height: 100%;
-  width: 0%;
-  transition: width 0.5s ease;
-}
-.progress-fill.job {
-  background: linear-gradient(90deg, var(--green), #16a34a);
-}
-.progress-fill.business {
-  background: linear-gradient(90deg, var(--orange), #ea580c);
-}
-.stats { display: flex; justify-content: space-around; margin: 20px 0; }
-.stat { text-align: center; }
-.stat-label { font-size: 12px; color: var(--muted); }
-canvas { margin-top: 20px; max-height: 200px; }
-input[type="file"] { display: none; }
-.reminder-status { font-size: 12px; color: var(--muted); margin-top: 5px; }
-.tag {
-  display: inline-block;
-  font-size: 12px;
-  padding: 2px 8px;
-  border-radius: 12px;
-  margin-right: 6px;
-  font-weight: bold;
-}
-.tag.job { background: var(--green); color: white; }
-.tag.business { background: var(--orange); color: white; }
-.breakdown {
-  display:flex;
-  justify-content:space-around;
-  margin-top:10px;
-  font-size:14px;
-}
-
-/* Weekly goal bar */
-.weekly-goal { margin-top: 12px; text-align: left; }
-.goal-bar {
-  height: 8px;
-  background: var(--input);
-  border-radius: 4px;
-  overflow: hidden;
-  margin-top: 5px;
-}
-#weeklyGoalBar {
-  height: 100%;
-  background: #4ade80;
-  width: 0%;
-  transition: width 0.3s;
-}
-#weeklyGoalText { font-size: 14px; color: var(--muted); }
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kings Cut Barbershop | Uyo</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+    .container { width: 90%; max-width: 500px; margin: 0 auto; }
+    
+    header { background: #111; color: #fff; padding: 60px 0; text-align: center; }
+    header h1 { font-size: 2.2rem; margin-bottom: 10px; }
+    header p { font-size: 1.1rem; color: #ccc; margin-bottom: 25px; }
+    .btn { 
+      display: inline-block; background: #25D366; color: #fff; 
+      padding: 15px 30px; text-decoration: none; border-radius: 8px; 
+      font-weight: bold; font-size: 1.1rem; 
+    }
+    
+    section { padding: 40px 0; }
+    h2 { text-align: center; margin-bottom: 25px; font-size: 1.8rem; }
+    
+    .services { background: #f4f4f4; }
+    .service { background: #fff; padding: 20px; margin-bottom: 15px; border-radius: 8px; }
+    .service h3 { margin-bottom: 5px; }
+    .price { color: #111; font-weight: bold; font-size: 1.2rem; }
+    
+    .gallery { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .gallery img { width: 100%; height: 150px; object-fit: cover; border-radius: 8px; }
+    
+    .contact { background: #111; color: #fff; text-align: center; }
+    .contact a { color: #25D366; }
+    
+    footer { background: #000; color: #aaa; text-align: center; padding: 20px 0; font-size: 0.9rem; }
+  </style>
 </head>
 <body>
-<button class="theme-toggle" onclick="toggleTheme()">🌙</button>
-
-<h1>Day 9: Daily Reminders</h1>
-<p class="quote" id="quote">Loading motivation...</p>
-
-<div class="card">
-  <p><strong>Done Johnny</strong> | Goal: Remote job by Dec 2027</p>
-
-  <div class="stats">
-    <div class="stat">
-      <div id="dayCount">9</div>
-      <div class="stat-label">Day</div>
+  <header>
+    <div class="container">
+      <h1>Kings Cut Barbershop</h1>
+      <p>Premium Cuts in Uyo | Open Mon-Sat 9am-8pm</p>
+      <a href="https://wa.me/2348000000000?text=Hi%20Kings%20Cut,%20I%20want%20to%20book%20a%20haircut" class="btn">Book on WhatsApp</a>
     </div>
-    <div class="stat">
-      <div id="streak">0</div>
-      <div class="stat-label">Streak</div>
+  </header>
+
+  <section class="services">
+    <div class="container">
+      <h2>Our Services</h2>
+      <div class="service">
+        <h3>Classic Haircut</h3>
+        <p class="price">₦3,000</p>
+      </div>
+      <div class="service">
+        <h3>Beard Trim + Line Up</h3>
+        <p class="price">₦2,000</p>
+      </div>
+      <div class="service">
+        <h3>Haircut + Wash</h3>
+        <p class="price">₦4,500</p>
+      </div>
     </div>
-    <div class="stat">
-      <div id="totalHours">0</div>
-      <div class="stat-label">Hours</div>
+  </section>
+
+  <section>
+    <div class="container">
+      <h2>Our Work</h2>
+      <div class="gallery">
+        <img src="https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=400" alt="Haircut 1">
+        <img src="https://images.unsplash.com/photo-1621605813220-54095c6c1d1c?w=400" alt="Haircut 2">
+        <img src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=400" alt="Haircut 3">
+        <img src="https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=400" alt="Haircut 4">
+      </div>
     </div>
-  </div>
+  </section>
 
-  <div class="weekly-goal">
-    <div id="weeklyGoalText">0h / 20h</div>
-    <div class="goal-bar"><div id="weeklyGoalBar"></div></div>
-  </div>
+  <section class="contact">
+    <div class="container">
+      <h2>Visit Us</h2>
+      <p>Plot 45, Oron Road, Uyo, Akwa Ibom</p>
+      <p style="margin: 20px 0;">Call: <a href="tel:+2348000000000">0800 000 0000</a></p>
+      <a href="https://wa.me/2348000000000?text=Hi%20Kings%20Cut,%20I%20want%20to%20book%20a%20haircut" class="btn">Chat on WhatsApp</a>
+    </div>
+  </section>
 
-  <div class="breakdown">
-    <div>💼 Job Hunt: <span id="jobHours">0</span>h</div>
-    <div>🚀 Business: <span id="businessHours">0</span>h</div>
-  </div>
-
-  <div class="progress-bar">
-    <div class="progress-fill job" id="jobFill"></div>
-    <div class="progress-fill business" id="businessFill"></div>
-  </div>
-  <p><span id="jobPercent">0%</span> Job Hunt • <span id="businessPercent">0%</span> Business</p>
-  <p id="focusScore" style="font-weight:bold; margin-top:5px;">Focus: 0%</p>
-  <canvas id="hoursChart"></canvas>
-
-  <div class="card" id="weeklyReview" style="display:none;">
-    <h3>📊 Weekly Review</h3>
-    <p id="weekStats"></p>
-    <p id="weekFocus"></p>
-    <button onclick="closeWeeklyReview()">Got it</button>
-  </div>
-
-  <input type="number" id="hoursInput" placeholder="Hours coded today" min="0" step="0.5">
-
-  <select id="typeInput">
-    <option value="job">Job Hunt</option>
-    <option value="business">Business</option>
-  </select>
-
-  <label for="noteInput" style="display:block; text-align:left; margin-top:10px; font-size:14px; color:var(--muted);">
-    What did you work on?
-  </label>
-  <input type="text" id="noteInput" placeholder="e.g. Client website edits, React practice">
-
-  <button onclick="logHours()">Log Hours</button>
-
-  <div class="btn-row">
-    <button class="secondary" onclick="exportData()">Export Data</button>
-    <label for="importFile" class="secondary" style="padding:14px; cursor:pointer; display:inline-block; text-align:center;">Import Data</label>
-    <input type="file" id="importFile" accept=".json" onchange="importData(event)">
-  </div>
-
-  <button class="reminder" onclick="enableNotifications()">🔔 Enable Daily Reminder</button>
-  <p class="reminder-status" id="reminderStatus">Reminders: Off</p>
-
-  <hr>
-
-  <h3>History</h3>
-  <ul id="historyList"></ul>
-
-  <button class="reset" onclick="resetAll()">Reset All</button>
-</div>
-
-<script>
-const quotes = [
-  "Consistency beats intensity every time.",
-  "You're 1% better than yesterday.",
-  "Future you is watching. Don't disappoint them.",
-  "Code a little. Every. Single. Day.",
-  "Discipline is choosing what you want most over what you want now.",
-  "Small steps daily lead to massive results."
-];
-
-let day = parseInt(localStorage.getItem('codingDay')) || 9;
-let hoursLog = JSON.parse(localStorage.getItem('hoursLog')) || [];
-let theme = localStorage.getItem('theme') || 'dark';
-let chart;
-
-function applyTheme() {
-  document.documentElement.setAttribute('data-theme', theme);
-  document.querySelector('.theme-toggle').textContent = theme === 'dark'? '🌙' : '☀️';
-  updateChartColors();
-}
-
-function toggleTheme() {
-  theme = theme === 'dark'? 'light' : 'dark';
-  localStorage.setItem('theme', theme);
-  applyTheme();
-}
-
-function showQuote() {
-  let randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
-  document.getElementById('quote').textContent = '"' + randomQuote + '"';
-}
-
-function initChart() {
-  const ctx = document.getElementById('hoursChart').getContext('2d');
-  chart = new Chart(ctx, {
-    type: 'line',
-    data: {
-      labels: [],
-      datasets: [{
-        label: 'Hours Coded',
-        data: [],
-        borderColor: '#22c55e',
-        backgroundColor: 'rgba(34, 197, 94, 0.2)',
-        tension: 0.3
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: { legend: { display: false } },
-      scales: {
-        y: { beginAtZero: true, ticks: { color: '#94a3b8' } },
-        x: { ticks: { color: '#94a3b8' } }
-      }
-    }
-  });
-}
-
-function updateChartColors() {
-  if(!chart) return;
-  const color = theme === 'dark'? '#94a3b8' : '#64748b';
-  chart.options.scales.y.ticks.color = color;
-  chart.options.scales.x.ticks.color = color;
-  chart.update();
-}
-
-function updateChart() {
-  if(!chart) return;
-  const labels = hoursLog.map(e => 'Day ' + e.day);
-  const data = hoursLog.map(e => e.hours);
-  chart.data.labels = labels;
-  chart.data.datasets[0].data = data;
-  chart.update();
-}
-
-function updateUI() {
-  document.getElementById('dayCount').textContent = day;
-  document.getElementById('streak').textContent = hoursLog.length;
-
-  let jobTotal = hoursLog.filter(e => e.type === 'job').reduce((sum, e) => sum + e.hours, 0);
-  let businessTotal = hoursLog.filter(e => e.type === 'business').reduce((sum, e) => sum + e.hours, 0);
-  let total = jobTotal + businessTotal;
-
-  document.getElementById('totalHours').textContent = total;
-  document.getElementById('jobHours').textContent = jobTotal;
-  document.getElementById('businessHours').textContent = businessTotal;
-
-  let jobPercent = Math.min((jobTotal / 100) * 100, 100);
-  let businessPercent = Math.min((businessTotal / 100) * 100, 100);
-
-  document.getElementById('jobFill').style.width = jobPercent + '%';
-  document.getElementById('businessFill').style.width = businessPercent + '%';
-  document.getElementById('jobPercent').textContent = Math.round(jobPercent) + '%';
-  document.getElementById('businessPercent').textContent = Math.round(businessPercent) + '%';
-
-  let focusPercent = total > 0? Math.round((jobTotal / total) * 100) : 0;
-  let focusEl = document.getElementById('focusScore');
-  focusEl.textContent = `Focus: ${focusPercent}% on Job Hunt`;
-  if (focusPercent < 60) {
-    focusEl.style.color = 'var(--red)';
-  } else if (focusPercent < 80) {
-    focusEl.style.color = 'var(--orange)';
-  } else {
-    focusEl.style.color = 'var(--green)';
-  }
-
-  // Weekly goal bar
-  const weeklyGoal = 20;
-  const goalPercent = Math.min(100, (total / weeklyGoal) * 100);
-  const left = Math.max(0, weeklyGoal - total);
-document.getElementById('weeklyGoalText').textContent = `${left}h to go`;
-  document.getElementById('weeklyGoalBar').style.width = goalPercent + '%';
-
-  let list = document.getElementById('historyList');
-  list.innerHTML = '';
-  hoursLog.slice().reverse().forEach(entry => {
-    let noteText = entry.note? ` - ${entry.note}` : '';
-    let tagText = entry.type === 'job'? '<span class="tag job">Job Hunt</span>' : '<span class="tag business">Business</span>';
-    let liClass = entry.type === 'job'? 'job' : 'business';
-    list.innerHTML += `<li class="${liClass}">${tagText} Day ${entry.day}: ${entry.hours}h${noteText}</li>`;
-  });
-
-  updateChart();
-  updateReminderStatus();
-  checkWeeklyReview();
-}
-
-function logHours() {
-  let hours = parseFloat(document.getElementById('hoursInput').value);
-  let note = document.getElementById('noteInput').value.trim();
-  let type = document.getElementById('typeInput').value;
-
-  if(!hours || hours <= 0) {
-    alert('Enter valid hours');
-    return;
-  }
-
-  let tempJobTotal = hoursLog.filter(e => e.type === 'job').reduce((sum, e) => sum + e.hours, 0);
-  let tempBusinessTotal = hoursLog.filter(e => e.type === 'business').reduce((sum, e) => sum + e.hours, 0);
-
-  if (type === 'job') tempJobTotal += hours;
-  if (type === 'business') tempBusinessTotal += hours;
-
-  let tempTotal = tempJobTotal + tempBusinessTotal;
-  let tempFocus = tempTotal > 0? (tempJobTotal / tempTotal) * 100 : 0;
-
-  if (tempFocus < 60) {
-    let proceed = confirm(`Warning: This will drop your Job Hunt focus to ${Math.round(tempFocus)}%.\n\nAre you sure you want to log this?`);
-    if (!proceed) return;
-  }
-
-  hoursLog.push({day: day, hours: hours, note: note, type: type});
-  localStorage.setItem('hoursLog', JSON.stringify(hoursLog));
-  document.getElementById('hoursInput').value = '';
-  document.getElementById('noteInput').value = '';
-
-  day++;
-  localStorage.setItem('codingDay', day);
-  updateUI();
-  showQuote();
-  alert(`Logged ${hours}h ✅ Day ${day-1} complete!`);
-}
-
-function exportData() {
-  const data = {
-    day: day,
-    hoursLog: hoursLog,
-    theme: theme,
-    exportDate: new Date().toISOString()
-  };
-
-  const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = 'coding-tracker-backup.json';
-  a.click();
-  URL.revokeObjectURL(url);
-  alert('Data exported! Check your Downloads folder.');
-}
-
-function importData(event) {
-  const file = event.target.files[0];
-  if(!file) return;
-
-  const reader = new FileReader();
-  reader.onload = function(e) {
-    try {
-      const data = JSON.parse(e.target.result);
-      if(confirm('This will overwrite your current data. Continue?')) {
-        day = data.day || 9;
-        hoursLog = data.hoursLog || [];
-        theme = data.theme || 'dark';
-        localStorage.setItem('codingDay', day);
-        localStorage.setItem('hoursLog', JSON.stringify(hoursLog));
-        localStorage.setItem('theme', theme);
-        updateUI();
-        applyTheme();
-        alert('Data imported successfully!');
-      }
-    } catch(err) {
-      alert('Invalid file format');
-    }
-  };
-  reader.readAsText(file);
-}
-
-function enableNotifications() {
-  if(!("Notification" in window)) {
-    alert("Your browser doesn't support notifications");
-    return;
-  }
-
-  Notification.requestPermission().then(permission => {
-    if(permission === "granted") {
-      localStorage.setItem('remindersEnabled', 'true');
-      updateReminderStatus();
-      alert("Reminders enabled! You'll get a reminder daily at 8 PM.");
-      scheduleNotification();
-    } else {
-      alert("Permission denied. You can enable it in browser settings.");
-    }
-  });
-}
-
-function scheduleNotification() {
-  setInterval(() => {
-    const now = new Date();
-    if(now.getHours() === 20 && now.getMinutes() === 0 && localStorage.getItem('remindersEnabled') === 'true') {
-      new Notification("Time to code! 💻", {
-        body: "Log your hours for today and keep your streak alive",
-        icon: "https://cdn-icons-png.flaticon.com/512/5968/5968705.png"
-      });
-    }
-  }, 60000);
-}
-
-function updateReminderStatus() {
-  const status = localStorage.getItem('remindersEnabled') === 'true'? 'On' : 'Off';
-  document.getElementById('reminderStatus').textContent = `Reminders: ${status}`;
-}
-
-function resetAll() {
-  if(confirm('Reset everything?')) {
-    localStorage.clear();
-    day = 9;
-    hoursLog = [];
-    theme = 'dark';
-    updateUI();
-    showQuote();
-    applyTheme();
-  }
-}
-
-function checkWeeklyReview() {
-  let today = new Date();
-  let lastShown = localStorage.getItem('lastWeekReview');
-
-  if(today.getDay() === 0 && lastShown!== today.toDateString()) {
-    let last7Days = hoursLog.filter(e => {
-      let entryDate = new Date();
-      entryDate.setDate(entryDate.getDate() - (day - e.day));
-      return (today - entryDate) / (1000*60*60*24) <= 7;
-    });
-
-    let weekHours = last7Days.reduce((sum, e) => sum + e.hours, 0);
-    let weekAvg = (weekHours / 7).toFixed(1);
-    let jobHours = last7Days.filter(e => e.type === 'job').reduce((sum, e) => sum + e.hours, 0);
-    let focus = weekHours > 0? Math.round((jobHours / weekHours) * 100) : 0;
-
-    document.getElementById('weekStats').textContent =
-      `This week: ${weekHours}h total, ${weekAvg}h/day average`;
-    document.getElementById('weekFocus').textContent =
-      `Job Hunt focus: ${focus}%`;
-
-    document.getElementById('weeklyReview').style.display = 'block';
-    localStorage.setItem('lastWeekReview', today.toDateString());
-  }
-}
-
-function closeWeeklyReview() {
-  document.getElementById('weeklyReview').style.display = 'none';
-}
-
-initChart();
-updateUI();
-showQuote();
-applyTheme();
-
-if(Notification.permission === "granted") {
-  localStorage.setItem('remindersEnabled', 'true');
-  scheduleNotification();
-}
-</script>
+  <footer>
+    <div class="container">
+      <p>&copy; 2026 Kings Cut Barbershop. Site by You.</p>
+    </div>
+  </footer>
 </body>
 </html>
